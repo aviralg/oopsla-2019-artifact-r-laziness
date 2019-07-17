@@ -92,7 +92,7 @@ RUN curl -L https://bit.ly/install-gnu-parallel | sh -x
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install nginx
 RUN rm -v /etc/nginx/nginx.conf
 ADD nginx.conf /etc/nginx/
-ADD paper.pdf /usr/share/nginx/html/
+ADD paper.pdf /var/www/
 
 ################################################################################
 ## User
