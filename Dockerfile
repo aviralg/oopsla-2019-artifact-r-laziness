@@ -81,7 +81,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install unixodbc-dev
 #rgl
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install freeglut3-dev libfreetype6-dev
 # promise-dyntracing-experiment
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb expect libzstd-dev time tree pandoc
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb expect libzstd-dev time tree pandoc xfonts-100dpi xfonts-75dpi
 # latest version of GNU parallel
 RUN curl -L https://bit.ly/install-gnu-parallel | sh -x
 
@@ -97,15 +97,13 @@ ADD paper.pdf /usr/share/nginx/html/
 ################################################################################
 ## User
 ################################################################################
-RUN useradd -ms /bin/bash -G sudo tracer
-RUN echo "tracer:tracer" | chpasswd
-RUN touch /var/run/nginx.pid && chown -R tracer:sudo /var/run/nginx.pid
-RUN mkdir /var/cache/nginx/ && chown -R tracer:sudo /var/cache/nginx/
-RUN mkdir /var/log/nginx/ && chown -R tracer:sudo /var/log/nginx/
-USER tracer
-WORKDIR /home/tracer
-RUN mkdir -p /home/tracer/library
-ENV R_LIBS_USER /home/tracer/library
+RUN useradd -ms /bin/bash -G sudo aviral
+RUN echo "aviral:aviral" | chpasswd
+RUN echo "aviral ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER aviral
+WORKDIR /home/aviral
+RUN mkdir -p /home/aviral/library
+ENV R_LIBS_USER /home/aviral/library
 ENV R_KEEP_PKG_SOURCE 1
 ENV R_ENABLE_JIT 0
 ENV R_COMPILE_PKGS 0
