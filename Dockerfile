@@ -90,7 +90,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install unixodbc-dev
 #rgl
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install freeglut3-dev libfreetype6-dev
 # promise-dyntracing-experiment
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb parallel expect libzstd-dev time
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb parallel expect libzstd-dev time tree
 ################################################################################
 ## User
 ################################################################################
@@ -122,4 +122,6 @@ RUN cd promisedyntracer && make
 ## promise-dyntracing-experiment
 ################################################################################
 RUN git clone --branch r-3.5.0 https://github.com/PRL-PRG/promise-dyntracing-experiment.git
-RUN cd promise-dyntracing-experiment && make install-dependencies DEPENDENCIES_FILEPATH=scripts/minimal-dependencies.txt
+RUN cd promise-dyntracing-experiment && xvfb-run make install-dependencies DEPENDENCIES_FILEPATH=scripts/package-dependencies.txt && rm -rf *.out
+
+ENTRYPOINT service nginx start && xvfb-run && bash
