@@ -49,15 +49,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install git subversion
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install curl wget rsync
 
 ################################################################################
-## Web Server
-## https://www.linkedin.com/pulse/serve-static-files-from-docker-via-nginx-basic-example-arun-kumar
-################################################################################
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install nginx
-RUN rm -v /etc/nginx/nginx.conf
-ADD nginx.conf /etc/nginx/
-ADD paper.pdf /usr/share/nginx/html/
-
-################################################################################
 ## Latex
 ################################################################################
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install texinfo texlive
@@ -90,12 +81,27 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install unixodbc-dev
 #rgl
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install freeglut3-dev libfreetype6-dev
 # promise-dyntracing-experiment
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb parallel expect libzstd-dev time tree
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb expect libzstd-dev time tree pandoc
+# latest version of GNU parallel
+RUN curl -L https://bit.ly/install-gnu-parallel | sh -x
+
+################################################################################
+## Web Server
+## https://www.linkedin.com/pulse/serve-static-files-from-docker-via-nginx-basic-example-arun-kumar
+################################################################################
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install nginx
+RUN rm -v /etc/nginx/nginx.conf
+ADD nginx.conf /etc/nginx/
+ADD paper.pdf /usr/share/nginx/html/
+
 ################################################################################
 ## User
 ################################################################################
 RUN useradd -ms /bin/bash -G sudo tracer
 RUN echo "tracer:tracer" | chpasswd
+RUN touch /var/run/nginx.pid && chown -R tracer:sudo /var/run/nginx.pid
+RUN mkdir /var/cache/nginx/ && chown -R tracer:sudo /var/cache/nginx/
+RUN mkdir /var/log/nginx/ && chown -R tracer:sudo /var/log/nginx/
 USER tracer
 WORKDIR /home/tracer
 RUN mkdir -p /home/tracer/library
@@ -109,7 +115,7 @@ ENV OMP_NUM_THREADS 1
 ################################################################################
 ## R-dyntrace
 ################################################################################
-RUN git clone --branch r-3.5.0 https://github.com/PRL-PRG/R-dyntrace.git
+RUN git clone --branch oopsla-2019-study-of-laziness-v1 https://github.com/PRL-PRG/R-dyntrace.git
 RUN cd R-dyntrace && ./build
 
 ################################################################################
@@ -124,4 +130,5 @@ RUN cd promisedyntracer && make
 RUN git clone --branch r-3.5.0 https://github.com/PRL-PRG/promise-dyntracing-experiment.git
 RUN cd promise-dyntracing-experiment && xvfb-run make install-dependencies DEPENDENCIES_FILEPATH=scripts/package-dependencies.txt && rm -rf *.out
 
-ENTRYPOINT service nginx start && xvfb-run && bash
+ADD entrypoint.sh ~/
+ENTRYPOINT ["~/entrypoint.sh"]
