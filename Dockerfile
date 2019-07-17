@@ -51,7 +51,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install curl wget rsync
 ################################################################################
 ## Latex
 ################################################################################
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install texinfo texlive
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install texinfo texlive texlive-fonts-extra libcairo2-dev libtiff-dev
 
 ################################################################################
 ## R Base
