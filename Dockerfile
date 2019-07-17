@@ -128,5 +128,5 @@ RUN cd promisedyntracer && make
 RUN git clone --branch r-3.5.0 https://github.com/PRL-PRG/promise-dyntracing-experiment.git
 RUN cd promise-dyntracing-experiment && xvfb-run make install-dependencies DEPENDENCIES_FILEPATH=scripts/package-dependencies.txt && rm -rf *.out
 
-ADD entrypoint.sh ~/
-ENTRYPOINT ["~/entrypoint.sh"]
+ADD entrypoint.sh /home/aviral/
+ENTRYPOINT ["/home/aviral/entrypoint.sh"]
