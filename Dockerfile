@@ -49,6 +49,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install git subversion
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install curl wget rsync
 
 ################################################################################
+## Process Monitoring
+################################################################################
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install procps htop
+
+################################################################################
 ## Latex
 ################################################################################
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install texinfo texlive texlive-fonts-extra libcairo2-dev libtiff-dev
