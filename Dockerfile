@@ -50,8 +50,17 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install curl wget rsync
 
 ################################################################################
 ## Web Server
+## https://www.linkedin.com/pulse/serve-static-files-from-docker-via-nginx-basic-example-arun-kumar
 ################################################################################
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install nginx
+RUN rm -v /etc/nginx/nginx.conf
+ADD nginx.conf /etc/nginx/
+ADD paper.pdf /usr/share/nginx/html/
+
+################################################################################
+## Latex
+################################################################################
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install texinfo texlive
 
 ################################################################################
 ## R Base
@@ -81,11 +90,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install unixodbc-dev
 #rgl
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install freeglut3-dev libfreetype6-dev
 # promise-dyntracing-experiment
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb parallel expect libzstd-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy install xvfb parallel expect libzstd-dev time
 ################################################################################
 ## User
 ################################################################################
 RUN useradd -ms /bin/bash -G sudo tracer
+RUN echo "tracer:tracer" | chpasswd
 USER tracer
 WORKDIR /home/tracer
 RUN mkdir -p /home/tracer/library
@@ -112,4 +122,4 @@ RUN cd promisedyntracer && make
 ## promise-dyntracing-experiment
 ################################################################################
 RUN git clone --branch r-3.5.0 https://github.com/PRL-PRG/promise-dyntracing-experiment.git
-RUN cd promise-dyntracing-experiment && make install-dependencies DEPENDENCIES_FILEPATH=scripts/package-dependencies.txt
+RUN cd promise-dyntracing-experiment && make install-dependencies DEPENDENCIES_FILEPATH=scripts/minimal-dependencies.txt
