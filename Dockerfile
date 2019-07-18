@@ -99,7 +99,7 @@ RUN rm -v /etc/nginx/nginx.conf
 ADD nginx.conf /etc/nginx/
 ADD paper.pdf /var/www/
 ADD small.html /var/www/
-ADD small_files /var/www/
+COPY small_files /var/www/small_files
 
 ################################################################################
 ## User
