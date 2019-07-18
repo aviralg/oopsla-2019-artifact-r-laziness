@@ -100,6 +100,8 @@ ADD nginx.conf /etc/nginx/
 ADD paper.pdf /var/www/
 ADD small.html /var/www/
 COPY small_files /var/www/small_files
+ADD large.html /var/www/
+COPY large_files /var/www/large_files
 
 ################################################################################
 ## User
